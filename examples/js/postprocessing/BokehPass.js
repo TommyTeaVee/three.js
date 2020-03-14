@@ -2,7 +2,6 @@
  * Depth-of-field post-process with bokeh shader
  */
 
-
 THREE.BokehPass = function ( scene, camera, params ) {
 
 	THREE.Pass.call( this );
@@ -20,14 +19,12 @@ THREE.BokehPass = function ( scene, camera, params ) {
 	var width = params.width || window.innerWidth || 1;
 	var height = params.height || window.innerHeight || 1;
 
-	this.renderTargetColor = new THREE.WebGLRenderTarget( width, height, {
-		minFilter: THREE.LinearFilter,
-		magFilter: THREE.LinearFilter,
-		format: THREE.RGBFormat
+	this.renderTargetDepth = new THREE.WebGLRenderTarget( width, height, {
+		minFilter: THREE.NearestFilter,
+		magFilter: THREE.NearestFilter,
+		stencilBuffer: false
 	} );
-	this.renderTargetColor.texture.name = "BokehPass.color";
 
-	this.renderTargetDepth = this.renderTargetColor.clone();
 	this.renderTargetDepth.texture.name = "BokehPass.depth";
 
 	// depth material
@@ -69,7 +66,6 @@ THREE.BokehPass = function ( scene, camera, params ) {
 	this.fsQuad = new THREE.Pass.FullScreenQuad( this.materialBokeh );
 
 	this.oldClearColor = new THREE.Color();
-	this.oldClearAlpha = 1;
 
 };
 
@@ -77,14 +73,14 @@ THREE.BokehPass.prototype = Object.assign( Object.create( THREE.Pass.prototype )
 
 	constructor: THREE.BokehPass,
 
-	render: function ( renderer, writeBuffer, readBuffer, deltaTime, maskActive ) {
+	render: function ( renderer, writeBuffer, readBuffer/*, deltaTime, maskActive*/ ) {
 
 		// Render depth into texture
 
 		this.scene.overrideMaterial = this.materialDepth;
 
 		this.oldClearColor.copy( renderer.getClearColor() );
-		this.oldClearAlpha = renderer.getClearAlpha();
+		var oldClearAlpha = renderer.getClearAlpha();
 		var oldAutoClear = renderer.autoClear;
 		renderer.autoClear = false;
 
@@ -115,8 +111,8 @@ THREE.BokehPass.prototype = Object.assign( Object.create( THREE.Pass.prototype )
 
 		this.scene.overrideMaterial = null;
 		renderer.setClearColor( this.oldClearColor );
-		renderer.setClearAlpha( this.oldClearAlpha );
-		renderer.autoClear = this.oldAutoClear;
+		renderer.setClearAlpha( oldClearAlpha );
+		renderer.autoClear = oldAutoClear;
 
 	}
 
