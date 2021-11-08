@@ -113,8 +113,9 @@ class Object3D extends EventDispatcher {
 
 	}
 
-	onBeforeRender() {}
-	onAfterRender() {}
+	onBeforeRender( /* renderer, scene, camera, geometry, material, group */ ) {}
+
+	onAfterRender( /* renderer, scene, camera, geometry, material, group */ ) {}
 
 	applyMatrix4( matrix ) {
 
@@ -701,21 +702,27 @@ class Object3D extends EventDispatcher {
 
 		if ( this.isScene ) {
 
-			if ( this.background && this.background.isColor ) {
+			if ( this.background ) {
 
-				object.background = this.background.toJSON();
+				if ( this.background.isColor ) {
 
-			} else if ( this.background && this.background.isTexture ) {
+					object.background = this.background.toJSON();
 
-				object.background = this.background.toJSON( meta ).uuid;
+				} else if ( this.background.isTexture ) {
+
+					object.background = this.background.toJSON( meta ).uuid;
+
+				}
 
 			}
 
-			if ( this.environment && this.environment.isTexture ) object.environment = this.environment.toJSON( meta ).uuid;
+			if ( this.environment && this.environment.isTexture ) {
 
-		}
+				object.environment = this.environment.toJSON( meta ).uuid;
 
-		if ( this.isMesh || this.isLine || this.isPoints ) {
+			}
+
+		} else if ( this.isMesh || this.isLine || this.isPoints ) {
 
 			object.geometry = serialize( meta.geometries, this.geometry );
 

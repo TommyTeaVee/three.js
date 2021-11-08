@@ -175,7 +175,8 @@ function Viewport( editor ) {
 
 		raycaster.setFromCamera( mouse, camera );
 
-		return raycaster.intersectObjects( objects );
+		return raycaster.intersectObjects( objects )
+			.filter( intersect => intersect.object.visible === true );
 
 	}
 
@@ -565,11 +566,8 @@ function Viewport( editor ) {
 
 				if ( backgroundEquirectangularTexture ) {
 
-					var renderTarget = new THREE.WebGLCubeRenderTarget( backgroundEquirectangularTexture.image.width );
-					renderTarget.fromEquirectangularTexture( renderer, backgroundEquirectangularTexture );
-					renderTarget.toJSON = function () { return null }; // TODO Remove hack
-
-					scene.background = renderTarget.texture;
+					backgroundEquirectangularTexture.mapping = THREE.EquirectangularReflectionMapping;
+					scene.background = backgroundEquirectangularTexture;
 
 				}
 
@@ -599,7 +597,8 @@ function Viewport( editor ) {
 
 				if ( environmentEquirectangularTexture ) {
 
-					scene.environment = pmremGenerator.fromEquirectangular( environmentEquirectangularTexture ).texture;
+					environmentEquirectangularTexture.mapping = THREE.EquirectangularReflectionMapping;
+					scene.environment = environmentEquirectangularTexture;
 
 				}
 

@@ -97,7 +97,7 @@
 		<p>
 			Defines the intended usage pattern of the data store for optimization purposes. Corresponds to the *usage* parameter of
 			[link:https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData WebGLRenderingContext.bufferData]().
-			Default is *THREE.StaticDrawUsage*.
+			Default is [page:BufferAttributeUsage StaticDrawUsage]. See usage [page:BufferAttributeUsage constants] for all possible values.
 		</p>
 
 		<h3>[property:Integer version]</h3>
@@ -131,7 +131,7 @@
 			for notes on requirements if copying a TypedArray.
 		</p>
 
-		<h3>[method:null copyAt] ( [param:Integer index1], [param:BufferAttribute bufferAttribute], [param:Integer index2] ) </h3>
+		<h3>[method:this copyAt] ( [param:Integer index1], [param:BufferAttribute bufferAttribute], [param:Integer index2] ) </h3>
 		<p>Copy a vector from bufferAttribute[index2] to [page:BufferAttribute.array array][index1].</p>
 
 		<h3>[method:BufferAttribute copyColorsArray]( [param:Array colors] ) </h3>
@@ -179,7 +179,7 @@
 		</p>
 
 		<h3>[method:BufferAttribute setUsage] ( [param:Usage value] ) </h3>
-		<p>Set [page:BufferAttribute.usage usage] to value.</p>
+		<p>Set [page:BufferAttribute.usage usage] to value. See usage [page:BufferAttributeUsage constants] for all possible input values.</p>
 
 		<h3>[method:BufferAttribute setX]( [param:Integer index], [param:Float x] ) </h3>
 		<p>Sets the x component of the vector at the given index.</p>
