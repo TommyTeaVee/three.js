@@ -19,7 +19,7 @@
 
 			This allows a [page:Vector3] representing a point in 3D space to undergo transformations
 			such as translation, rotation, shear, scale, reflection, orthogonal or perspective projection
-			and so on, by being multiplied by the matrix. This is known as	<em>applying</em>
+			and so on, by being multiplied by the matrix. This is known as	`applying`
 			the matrix to the vector.<br /><br />
 
 			Every [page:Object3D] has three associated Matrix4s:
@@ -202,9 +202,9 @@ zAxis = (c, g, k)
 		<h3>[method:this identity]()</h3>
 		<p>Resets this matrix to the [link:https://en.wikipedia.org/wiki/Identity_matrix identity matrix].</p>
 
-		<h3>[method:this lookAt]( [param:Vector3 eye], [param:Vector3 center], [param:Vector3 up], )</h3>
+		<h3>[method:this lookAt]( [param:Vector3 eye], [param:Vector3 target], [param:Vector3 up] )</h3>
 		<p>
-			Constructs a rotation matrix, looking from [page:Vector3 eye] towards [page:Vector3 center]
+			Constructs a rotation matrix, looking from [page:Vector3 eye] towards [page:Vector3 target]
 			oriented by the [page:Vector3 up] vector.
 		</p>
 

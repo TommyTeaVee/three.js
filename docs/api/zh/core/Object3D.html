@@ -35,7 +35,7 @@
 	<h3>[property:Boolean castShadow]</h3>
 	<p>对象是否被渲染到阴影贴图中。默认值为*false*。</p>
 
-	<h3>[property:Object3D children]</h3>
+	<h3>[property:Array children]</h3>
 	<p>含有对象的子级的数组。请参阅[page:Group]来了解将手动对象进行分组的相关信息。</p>
 
 	<h3>[property:Material customDepthMaterial]</h3>
@@ -54,6 +54,11 @@
 
 	<h3>[property:Integer id]</h3>
 	<p>只读 —— 表示该对象实例ID的唯一数字。</p>
+
+		<h3>[property:Boolean isObject3D]</h3>
+		<p>
+			Read-only flag to check if a given object is of type [name].
+		</p>
 
 	<h3>[property:Layers layers]</h3>
 	<p>
@@ -194,7 +199,7 @@
 
 	<h2>方法</h2>
 
-	<h3>[page:EventDispatcher EventDispatcher] 方法在这个类上是可用的。</h3>
+	<p>[page:EventDispatcher EventDispatcher] 在该类上可用的所有方法。</p>
 
 	<h3>[method:this add]( [param:Object3D object], ... )</h3>
 	<p>

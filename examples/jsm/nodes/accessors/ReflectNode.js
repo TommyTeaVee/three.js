@@ -1,157 +1,66 @@
-import { TempNode } from '../core/TempNode.js';
-import { PositionNode } from './PositionNode.js';
-import { NormalNode } from './NormalNode.js';
+import Node from '../core/Node.js';
+import {
+	nodeObject, transformedNormalView, positionViewDirection,
+	transformDirection, negate, reflect, vec3, cameraViewMatrix
+} from '../shadernode/ShaderNodeBaseElements.js';
 
-class ReflectNode extends TempNode {
+class ReflectNode extends Node {
 
-	constructor( scope ) {
+	static VECTOR = 'vector';
+	static CUBE = 'cube';
 
-		super( 'v3' );
+	constructor( scope = ReflectNode.CUBE ) {
 
-		this.scope = scope || ReflectNode.CUBE;
+		super( 'vec3' );
 
-	}
-
-	getUnique( builder ) {
-
-		return ! builder.context.viewNormal;
-
-	}
-
-	getType( /* builder */ ) {
-
-		switch ( this.scope ) {
-
-			case ReflectNode.SPHERE:
-
-				return 'v2';
-
-		}
-
-		return this.type;
+		this.scope = scope;
 
 	}
 
-	generate( builder, output ) {
+	getHash( /*builder*/ ) {
 
-		const isUnique = this.getUnique( builder );
+		return `reflect-${this.scope}`;
 
-		if ( builder.isShader( 'fragment' ) ) {
+	}
 
-			let result, code, reflectVec;
+	generate( builder ) {
 
-			switch ( this.scope ) {
+		const scope = this.scope;
 
-				case ReflectNode.VECTOR:
+		if ( scope === ReflectNode.VECTOR ) {
 
-					const viewNormalNode = new NormalNode( NormalNode.VIEW );
-					const roughnessNode = builder.context.roughness;
+			const reflectView = reflect( negate( positionViewDirection ), transformedNormalView );
+			const reflectVec = transformDirection( reflectView, cameraViewMatrix );
 
-					const viewNormal = viewNormalNode.build( builder, 'v3' );
-					const viewPosition = new PositionNode( PositionNode.VIEW ).build( builder, 'v3' );
-					const roughness = roughnessNode ? roughnessNode.build( builder, 'f' ) : undefined;
+			return reflectVec.build( builder );
 
-					let method = `reflect( -normalize( ${viewPosition} ), ${viewNormal} )`;
+		} else if ( scope === ReflectNode.CUBE ) {
 
-					if ( roughness ) {
+			const reflectVec = nodeObject( new ReflectNode( ReflectNode.VECTOR ) );
+			const cubeUV = vec3( negate( reflectVec.x ), reflectVec.yz );
 
-						// Mixing the reflection with the normal is more accurate and keeps rough objects from gathering light from behind their tangent plane.
-						method = `normalize( mix( ${method}, ${viewNormal}, ${roughness} * ${roughness} ) )`;
-
-					}
-
-					code = `inverseTransformDirection( ${method}, viewMatrix )`;
-
-					if ( isUnique ) {
-
-						builder.addNodeCode( `vec3 reflectVec = ${code};` );
-
-						result = 'reflectVec';
-
-					} else {
-
-						result = code;
-
-					}
-
-					break;
-
-				case ReflectNode.CUBE:
-
-					reflectVec = new ReflectNode( ReflectNode.VECTOR ).build( builder, 'v3' );
-
-					code = 'vec3( -' + reflectVec + '.x, ' + reflectVec + '.yz )';
-
-					if ( isUnique ) {
-
-						builder.addNodeCode( `vec3 reflectCubeVec = ${code};` );
-
-						result = 'reflectCubeVec';
-
-					} else {
-
-						result = code;
-
-					}
-
-					break;
-
-				case ReflectNode.SPHERE:
-
-					reflectVec = new ReflectNode( ReflectNode.VECTOR ).build( builder, 'v3' );
-
-					code = 'normalize( ( viewMatrix * vec4( ' + reflectVec + ', 0.0 ) ).xyz + vec3( 0.0, 0.0, 1.0 ) ).xy * 0.5 + 0.5';
-
-					if ( isUnique ) {
-
-						builder.addNodeCode( `vec2 reflectSphereVec = ${code};` );
-
-						result = 'reflectSphereVec';
-
-					} else {
-
-						result = code;
-
-					}
-
-					break;
-
-			}
-
-			return builder.format( result, this.getType( builder ), output );
-
-		} else {
-
-			console.warn( 'THREE.ReflectNode is not compatible with ' + builder.shader + ' shader.' );
-
-			return builder.format( 'vec3( 0.0 )', this.type, output );
+			return cubeUV.build( builder );
 
 		}
 
 	}
 
-	toJSON( meta ) {
+	serialize( data ) {
 
-		let data = this.getJSONNode( meta );
+		super.serialize( data );
 
-		if ( ! data ) {
+		data.scope = this.scope;
 
-			data = this.createJSONNode( meta );
+	}
 
-			data.scope = this.scope;
+	deserialize( data ) {
 
-		}
+		super.deserialize( data );
 
-		return data;
+		this.scope = data.scope;
 
 	}
 
 }
 
-ReflectNode.CUBE = 'cube';
-ReflectNode.SPHERE = 'sphere';
-ReflectNode.VECTOR = 'vector';
-
-ReflectNode.prototype.nodeType = 'Reflect';
-
-export { ReflectNode };
+export default ReflectNode;

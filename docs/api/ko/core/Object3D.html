@@ -33,7 +33,7 @@
 		<h3>[property:Boolean castShadow]</h3>
 		<p>객체가 섀도우 맵으로 렌더링 되는지의 여부입니다. 기본값은 *false*입니다.</p>
 
-		<h3>[property:Object3D children]</h3>
+		<h3>[property:Array children]</h3>
 		<p>객체의 자식 배열입니다. 수동으로 객체를 그룹핑하는 내용은 [page:Group]을 참고하세요.</p>
 
 		<h3>[property:Material customDepthMaterial]</h3>
@@ -57,6 +57,11 @@
 
 		<h3>[property:Integer id]</h3>
 		<p>읽기전용 – 이 객체 인스턴스의 고유 번호입니다.</p>
+
+		<h3>[property:Boolean isObject3D]</h3>
+		<p>
+			Read-only flag to check if a given object is of type [name].
+		</p>
 
 		<h3>[property:Layers layers]</h3>
 		<p>
@@ -196,7 +201,7 @@
 
 		<h2>메서드</h2>
 
-		<h3>[page:EventDispatcher EventDispatcher] 메서드들은 이 클래스에서 사용 가능합니다.</h3>
+		<p>[page:EventDispatcher EventDispatcher] 메서드들은 이 클래스에서 사용 가능합니다.</p>
 
 		<h3>[method:this add]( [param:Object3D object], ... )</h3>
 		<p>
